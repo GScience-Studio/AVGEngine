@@ -56,6 +56,7 @@
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\ButtonRenderer.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +92,10 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AVGEngine\AVGEngine.csproj">
+      <Project>{a6ec0087-a906-4703-b29f-faac590a3513}</Project>
+      <Name>AVGEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AVGGame\AVGGame.csproj">
       <Project>{76b83629-edfb-4bd5-914e-61ffc51b71a7}</Project>
       <Name>AVGGame</Name>

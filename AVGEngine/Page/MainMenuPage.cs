@@ -8,8 +8,8 @@ namespace AVGEngine.Page
         private readonly StackLayout mMainLayout;
 
         private readonly Style mButtonStyle;
-        private readonly Label mAboutButton;
-        private readonly Label mStartGameButton;
+        private readonly Button mAboutButton;
+        private readonly Button mStartGameButton;
 
         private readonly StackLayout mSubLayout;
         private readonly Image mTitleImage;
@@ -62,11 +62,13 @@ namespace AVGEngine.Page
             };
 
             //两个按钮
-            mStartGameButton = Control.createLabelButton("Start Game", StartGame);
-            mAboutButton = Control.createLabelButton("About Us", StartGame);
+            mStartGameButton = new Control.Button("开始游戏");
+            mAboutButton = new Control.Button("关于");
 
-            //两个按钮的布局
-            mSubLayout = new StackLayout
+            mStartGameButton.Clicked += StartGame;
+
+           //两个按钮的布局
+           mSubLayout = new StackLayout
             {
                 Children =
                 {
@@ -74,7 +76,7 @@ namespace AVGEngine.Page
                     mAboutButton
                 },
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
+                VerticalOptions = LayoutOptions.Center,
             };
 
             //主布局
@@ -83,10 +85,10 @@ namespace AVGEngine.Page
                 Children =
                 {
                     mTitleImage,
-                    mSubLayout
+                    mSubLayout,
                 },
                 HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
+                VerticalOptions = LayoutOptions.Center,
             };
 
             Content = mMainLayout;
@@ -98,19 +100,19 @@ namespace AVGEngine.Page
             base.OnSizeAllocated(width, height);
 
             //main layout
-            mMainLayout.Margin = new Thickness(Height / 5);
-            mMainLayout.Spacing = Height / 5;
-
+            mMainLayout.Margin = new Thickness(Height / 15);
+            mMainLayout.Spacing = Height / 10;
             //title
-            mTitleImage.HeightRequest = Height / 4;
+            mTitleImage.HeightRequest = Height / 3;
+
+            //two buttons layout
+            mSubLayout.Spacing = Height / 25;
 
             //two buttons
-            mStartGameButton.WidthRequest = mTitleImage.Width / 1.5;
-            mAboutButton.WidthRequest = mTitleImage.Width / 1.5;
-            mStartGameButton.FontSize = Height / 15;
-            mAboutButton.FontSize = Height / 15;
-            mStartGameButton.HeightRequest = mStartGameButton.FontSize * 2.5;
-            mAboutButton.HeightRequest = mStartGameButton.FontSize * 2.5;
+            mStartGameButton.WidthRequest = mTitleImage.Width / 2;
+            mAboutButton.WidthRequest = mTitleImage.Width / 2;
+            mStartGameButton.HeightRequest = height / 9;
+            mAboutButton.HeightRequest = height / 9;
         }
 
         private void StartGame(object sender, EventArgs e)
