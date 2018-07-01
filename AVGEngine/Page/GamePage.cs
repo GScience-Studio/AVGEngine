@@ -16,15 +16,18 @@ namespace AVGEngine.Page
         //角色列表
 	    private readonly List<Tuple<GameActor, Image>> mActorList = new List<Tuple<GameActor, Image>>();
 
-        /* 初始化游戏页
-         * message 对话框内的消息
-         */
-        protected GamePage(string message)
+        //设置消息
+	    public void setDialogMessage(string dialogMessage)
+	    {
+	        mDialogLabel.Text = dialogMessage;
+	    }
+
+        //初始化游戏页
+        protected GamePage()
 	    {
 	        //对话框
             mDialogLabel = new Label
 	        {
-	            Text = message,
                 BackgroundColor = Color.White
             };
 

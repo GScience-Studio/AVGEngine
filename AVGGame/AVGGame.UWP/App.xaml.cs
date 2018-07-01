@@ -4,6 +4,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
+using AVGEngine.Control;
 using Xamarin.Forms;
 using Application = Windows.UI.Xaml.Application;
 using Frame = Windows.UI.Xaml.Controls.Frame;
@@ -15,6 +16,8 @@ namespace AVGGame.UWP
     /// </summary>
     public sealed partial class App
     {
+        private DispatcherTimer mAppTickTimer;
+
         /// <summary>
         ///     Initializes the singleton application object.  This is the first line of authored code
         ///     executed, and as such is the logical equivalent of main() or WinMain().
@@ -23,6 +26,15 @@ namespace AVGGame.UWP
         {
             InitializeComponent();
             Suspending += OnSuspending;
+
+            mAppTickTimer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(10)};
+            mAppTickTimer.Tick += ApplicationTick;
+            mAppTickTimer.Start();
+        }
+
+        private void ApplicationTick(object sender, object e)
+        {
+            TimedTask.Update();
         }
 
         /// <summary>
