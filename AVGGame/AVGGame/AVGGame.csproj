@@ -14,9 +14,11 @@
     <EmbeddedResource Remove="Resources.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Resource\Actor\TestActor.png" />
     <None Remove="Resource\Title.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\Actor\TestActor.png" />
     <EmbeddedResource Include="Resource\Title.png" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using AVGEngine.Page;
 using Xamarin.Forms;
 
@@ -18,7 +19,7 @@ namespace AVGEngine
             InterApp = this;
 
             //加载资源
-            Resource.LoadFromAssembly(resAssembly, nameSpace);
+            Resource.InitFromAssembly(resAssembly, nameSpace);
             //获取记录中当前所在的位置
             string saveFilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Save.aes";
             GamePage startMap = null;
@@ -52,33 +53,40 @@ namespace AVGEngine
 
         public static class Resource
         {
+            private static Assembly resAssembly;
+            private static string nameSpace;
+
             public static ImageSource Title = null;
 
-            public static void LoadFromAssembly(Assembly resAssembly, string nameSpace)
+            //注意这里的name**不需要**加上命名空间和**文件后缀**
+            public static ImageSource LoadImageSource(string name)
             {
+                var resLocation = nameSpace + ".Resource." + name + ".png";
+                var res = resAssembly.GetManifestResourceStream(resLocation);
+
+                if (res == null)
+                    throw new NoNullAllowedException("Failed to find resource: " + resLocation +
+                                                     ".Read ReadMe.txt in AVGGame/Resource to find more.");
+
+                return ImageSource.FromStream(() => res);
+            }
+
+            public static void InitFromAssembly(Assembly ass, string nam)
+            {
+                resAssembly = ass;
+                nameSpace = nam;
+
                 foreach (var field in typeof(Resource).GetFields())
                 {
-                    var resLocation = nameSpace + ".Resource." + field.Name;
-                    Action<Stream> loadResource;
+                    var resName = field.Name;
 
-                    //根据类型判断后缀
-                    switch (field.FieldType.Name)
-                    {
-                        case "ImageSource":
-                            resLocation += ".png";
-                            loadResource = s => { field.SetValue(null, ImageSource.FromStream(() => s)); };
-                            break;
-                        default:
-                            throw new InvalidDataException("Don't support res with type: " + field.FieldType.Name);
-                    }
+                    //根据类型寻找加载器
+                    var loadMethod = typeof(Resource).GetMethod("Load" + field.FieldType.Name);
 
-                    var res = resAssembly.GetManifestResourceStream(resLocation);
+                    if (loadMethod == null)
+                        throw new InvalidDataException("Don't support res with type: " + field.FieldType.Name);
 
-                    if (res == null)
-                        throw new NoNullAllowedException("Failed to find resource: " + resLocation +
-                                                         ".Read ReadMe.txt in AVGGame/Resource to find more.");
-
-                    loadResource(res);
+                    field.SetValue(null, loadMethod.Invoke(null, new object[] {resName}));
                 }
             }
         }
