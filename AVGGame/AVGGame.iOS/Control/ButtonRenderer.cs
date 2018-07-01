@@ -17,12 +17,38 @@ namespace AVGGame.IOS.Control
         protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
+            if (Control == null)
+                return;
 
-            if (Control != null)
+            Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
+            Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+
+            Control.TouchDown += (sender, args) =>
             {
+                if (Control == null)
+                    return;
+
+                Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 128);
+                Control.SetTitleColor(UIColor.FromRGBA(0, 0, 0, 255), UIControlState.Normal);
+            };
+
+            Control.TouchUpInside += (sender, args) =>
+            {
+                if (Control == null)
+                    return;
+
                 Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
-                Control.SetTitleShadowColor(UIColor.Black, UIControlState.Normal);
-            }
+                Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+            };
+
+            Control.TouchUpOutside += (sender, args) =>
+            {
+                if (Control == null)
+                    return;
+
+                Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
+                Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+            };
         }
     }
 }

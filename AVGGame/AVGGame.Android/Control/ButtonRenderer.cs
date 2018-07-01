@@ -1,5 +1,7 @@
 ﻿using Android.Content;
+using Android.Content.Res;
 using Android.Graphics.Drawables;
+using Android.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -16,10 +18,34 @@ namespace AVGGame.Droid.Control
         protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
+            if (Control == null)
+                return;
+
             Control.SetBackground(new ColorDrawable(new Android.Graphics.Color(0, 0, 0, 77)));
-            Control.SetShadowLayer(5, 2.0f, 2.0f, Android.Graphics.Color.Black);
             Control.SetPadding(0, 0, 0, 0);
-            Control.Text = "";
+            Control.SetTextColor(new Android.Graphics.Color(255, 255, 255, 255));
+
+            Control.Touch += (sender, args) =>
+            {
+                if (args.Event.Action == MotionEventActions.Down)
+                {
+                    if (Control == null)
+                        return;
+
+                    Control.Background = new ColorDrawable(new Android.Graphics.Color(0, 0, 0, 128));
+                    Control.SetTextColor(new Android.Graphics.Color(0, 0, 0, 255));
+                }
+                else if (args.Event.Action == MotionEventActions.Up)
+                {
+                    if (Control == null)
+                        return;
+
+                    Control.Background = new ColorDrawable(new Android.Graphics.Color(0, 0, 0, 77));
+                    Control.SetTextColor(new Android.Graphics.Color(255, 255, 255, 255));
+
+                    Element?.SendClicked();
+                }
+            };
         }
     }
 }

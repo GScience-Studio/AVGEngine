@@ -11,7 +11,6 @@ namespace AVGEngine.Control
     {
         public Button(string title)
         {
-            TextColor = new Color(1.0, 1.0, 1.0, 1.0);
             Text = title;
             SizeChanged += (sender, args) => { FontSize = Height / 2; };
         }

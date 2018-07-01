@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
+﻿using System.Numerics;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.UWP;
@@ -16,8 +13,11 @@ namespace AVGGame.UWP.Control
         protected override void OnElementChanged(ElementChangedEventArgs<Button> e)
         {
             base.OnElementChanged(e);
+            if (Control == null)
+                return;
 
             Control.BackgroundColor = new SolidColorBrush(new Windows.UI.Color() {A = 77, B = 0, G = 0, R = 0});
+            Control.Foreground = new SolidColorBrush(new Windows.UI.Color() { A = 255, B = 255, G = 255, R = 255 });
         }
     }
 }
