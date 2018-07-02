@@ -7,7 +7,7 @@ namespace AVGGame.UWP
         {
             InitializeComponent();
 
-            LoadApplication(AVGGameCore.Program.AvgApp);
+            LoadApplication(AVGEngine.InterApplication.Create(new AVGGameCore.Laucher()));
         }
     }
 }

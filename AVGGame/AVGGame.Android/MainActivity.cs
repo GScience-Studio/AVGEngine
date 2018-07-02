@@ -21,7 +21,7 @@ namespace AVGGame.Droid
             base.OnCreate(bundle);
 
             Forms.Init(this, bundle);
-            LoadApplication(Program.AvgApp);
+            LoadApplication(AVGEngine.InterApplication.Create(new AVGGameCore.Laucher()));
         }
     }
 }

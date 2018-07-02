@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace AVGEngine.Page
 {
-	public class GamePage : ContentPage
+    public abstract class GamePage : ContentPage
 	{
         //对话框
 	    private Label mDialogLabel;
@@ -22,7 +22,23 @@ namespace AVGEngine.Page
 	        mDialogLabel.Text = dialogMessage;
 	    }
 
-        //初始化游戏页
+        //初始化
+	    protected abstract void OnInit();
+	    protected abstract void OnDestory();
+
+        protected override void OnAppearing()
+	    {
+	        base.OnAppearing();
+	        OnInit();
+	    }
+
+	    protected override void OnDisappearing()
+	    {
+	        base.OnDisappearing();
+	        OnDestory();
+        }
+
+	    //初始化游戏页
         protected GamePage()
 	    {
 	        //对话框
@@ -74,15 +90,6 @@ namespace AVGEngine.Page
 	                image.HeightRequest = actor.RelevantHeight * Height;
 	            else if (actor.RelevantWidth > 0)
                     image.WidthRequest = actor.RelevantWidth * Height;
-
-	            //位置
-                image.SizeChanged += (sender, args) =>
-	            {
-	                image.Margin = new Thickness(
-	                    -image.Width * image.AnchorX + actor.RelevantX * Width,
-	                    -image.Height * image.AnchorY + actor.RelevantY * Height,
-	                    0, 0);
-	            };
 	        }
 	    }
 
@@ -96,6 +103,22 @@ namespace AVGEngine.Page
 	    protected void AddActor(GameActor actor)
 	    {
 	        var image = new Image {Source = actor.ActorSource};
+
+            //大小
+	        if (actor.RelevantHeight > 0)
+	            image.HeightRequest = actor.RelevantHeight * Height;
+	        else if (actor.RelevantWidth > 0)
+	            image.WidthRequest = actor.RelevantWidth * Height;
+
+            //位置
+            image.SizeChanged += (sender, args) =>
+	        {
+	            image.Margin = new Thickness(
+	                -image.Width * image.AnchorX + actor.RelevantX * Width,
+	                -image.Height * image.AnchorY + actor.RelevantY * Height,
+	                0, 0);
+	        };
+
             mActorList.Add(new Tuple<GameActor, Image>(actor, image));
 	        mActorLayout.Children.Add(image);
         }

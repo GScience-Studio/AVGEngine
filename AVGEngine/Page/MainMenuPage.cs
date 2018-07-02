@@ -117,7 +117,7 @@ namespace AVGEngine.Page
 
         private void StartGame(object sender, EventArgs e)
         {
-            InterApplication.InterApp.MainPage = InterApplication.InterApp.inGamePage;
+            InterApplication.InterApp.StartGame();
         }
     }
 }

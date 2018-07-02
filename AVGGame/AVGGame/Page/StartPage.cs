@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using AVGEngine;
@@ -11,11 +12,23 @@ namespace AVGGameCore.Page
 {
     public class StartPage : GamePage
     {
-        public StartPage()
+        private double mTimePassed = 0;
+        private TimedTask mTestTask;
+
+        protected override void OnDestory()
+        {
+            mTestTask.Stop();
+        }
+
+        protected override void OnInit()
         {
             AddActor(new MyFirstActor(0.5, 0.5));
             setDialogMessage("12345");
-            var mTestTimer = TimedTask.createTask(() => setDialogMessage("" + (new Random()).NextDouble()), 1, true);
+            mTestTask = TimedTask.createTask(() =>
+            {
+                mTimePassed += 0.01;
+                setDialogMessage("" + mTimePassed);
+            }, 0.01, true);
         }
     }
 }

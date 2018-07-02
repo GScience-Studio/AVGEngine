@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using AVGEngine.Page;
 using Xamarin.Forms;
 
@@ -11,8 +12,35 @@ namespace AVGEngine
     public class InterApplication : Application
     {
         public static InterApplication InterApp;
+        public static InterApplication Create(GameLaucher laucher)
+        {
+            laucher.Init();
+            return InterApp;
+        }
 
-        public GamePage inGamePage { get; private set; }
+        private GamePage mInGamePage;
+        public GamePage InGamePage
+        {
+            private get => mInGamePage;
+            set
+            {
+                mInGamePage = value;
+
+                //保存
+                var stream = File.OpenWrite(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Save.aes");
+                var pageName = mInGamePage.GetType().Name;
+                var byteName = new byte[pageName.Length];
+                Encoding.UTF8.GetEncoder().GetBytes(pageName.ToCharArray(), 0, pageName.Length, byteName, 0, true);
+                stream.Write(byteName, 0, byteName.Length);
+                stream.Close();
+                
+                //切换
+                if (mIsGameStarted)
+                    MainPage = mInGamePage;
+            }
+        }
+
+        private bool mIsGameStarted = false;
 
         public InterApplication(Assembly resAssembly, string nameSpace)
         {
@@ -21,12 +49,15 @@ namespace AVGEngine
             //加载资源
             Resource.InitFromAssembly(resAssembly, nameSpace);
             //获取记录中当前所在的位置
-            string saveFilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Save.aes";
+            var saveFilePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Save.aes";
             GamePage startMap = null;
             if (!File.Exists(saveFilePath))
                 File.Create(saveFilePath).Close();
 
-            string pageName = File.OpenText(saveFilePath).ReadLine();
+            var stream = File.OpenText(saveFilePath);
+            var pageName = stream.ReadLine();
+            stream.Close();
+
             foreach (var type in resAssembly.GetTypes())
             {
                 if (type.Name == "StartPage")
@@ -34,21 +65,22 @@ namespace AVGEngine
 
                 if (type.Name == pageName)
                 {
-                    inGamePage = (GamePage) type.GetConstructor(new Type[0])?.Invoke(new object[0]);
+                    mInGamePage = (GamePage) type.GetConstructor(new Type[0])?.Invoke(new object[0]);
                     break;
                 }
             }
 
-            if (inGamePage == null)
-                inGamePage = startMap;
+            if (mInGamePage == null)
+                InGamePage = startMap;
 
             //切换到主菜单
             MainPage = new MainMenuPage();
         }
 
-        public void SwitchTo(GamePage gamePage)
+        public void StartGame()
         {
-            inGamePage = gamePage;
+            mIsGameStarted = true;
+            MainPage = mInGamePage;
         }
 
         public static class Resource

@@ -1,5 +1,4 @@
-﻿using AVGGameCore;
-using Foundation;
+﻿using Foundation;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -22,7 +21,7 @@ namespace AVGGame.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
-            LoadApplication(Program.AvgApp);
+            LoadApplication(AVGEngine.InterApplication.Create(new AVGGameCore.Laucher()));
 
             return base.FinishedLaunching(app, options);
         }
