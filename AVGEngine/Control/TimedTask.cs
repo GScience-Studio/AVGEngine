@@ -7,6 +7,16 @@ namespace AVGEngine.Control
     //异步任务
     public class TimedTask
     {
+        public EventHandler Finished;
+
+        public enum TaskState
+        {
+            Started, Paused, Stopped
+        }
+
+        //任务状态
+        private TaskState mTaskState = TaskState.Paused;
+
         //上次刷新时间
         private static DateTime mLastUpdateTime = DateTime.MinValue;
 
@@ -14,10 +24,8 @@ namespace AVGEngine.Control
         private static readonly List<TimedTask> mTimedTasks = new List<TimedTask>();
 
         private readonly Action mTask;
-        private double mDelay;
+        private readonly double mDelay;
         private double mTimePassed = 0;
-
-        private bool mIsStopped = false;
 
         //是否循环
         private readonly bool mIsLoop;
@@ -30,10 +38,29 @@ namespace AVGEngine.Control
             mIsLoop = isLoop;
         }
 
-        //停止
+        //暂停(可以再次Start)
+        public void Pause()
+        {
+            mTaskState = TaskState.Paused;
+        }
+
+        //停止(一旦停止则无法再继续)
         public void Stop()
         {
-            mIsStopped = true;
+            mTaskState = TaskState.Stopped;
+        }
+
+        //获取状态
+        public TaskState State()
+        {
+            return mTaskState;
+        }
+
+        //开始
+        public void Start()
+        {
+            if (mTaskState == TaskState.Paused)
+                mTaskState = TaskState.Started;
         }
 
         //刷新
@@ -55,11 +82,15 @@ namespace AVGEngine.Control
                 var timedTask = mTimedTasks[i];
 
                 //如果是已经停止的task
-                if (timedTask.mIsStopped)
+                if (timedTask.mTaskState == TaskState.Stopped)
                 {
                     mTimedTasks.RemoveAt(i--);
                     continue;
                 }
+                
+                //如果任务没有开始则不刷新
+                if (timedTask.mTaskState != TaskState.Started)
+                    continue;
 
                 timedTask.mTimePassed += deltaTime;
 
@@ -75,6 +106,10 @@ namespace AVGEngine.Control
                 {
                     timedTask.mTask();
                     mTimedTasks.RemoveAt(i--);
+                    timedTask.mTaskState = TaskState.Stopped;
+
+                    //调用结束函数
+                    timedTask.Finished?.Invoke(timedTask, new EventArgs());
                 }
             }
 

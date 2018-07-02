@@ -5,31 +5,28 @@ using System.Text;
 using System.Threading;
 using AVGEngine;
 using AVGEngine.Control;
+using AVGEngine.GameEvent;
 using AVGEngine.Page;
 using AVGGameCore.Actor;
+using Xamarin.Forms;
 
 namespace AVGGameCore.Page
 {
     public class StartPage : GamePage
     {
-        private double mTimePassed = 0;
-        private TimedTask mTestTask;
+        protected override void OnInit()
+        {
+            //添加角色
+            AddActor(new MyFirstActor(0.5, 0.5));
+
+            //处理测试事件
+            for (var i = 0; i < 50; ++i)
+                eventList.Add(new GameEventTextPrinterLabel(DialogLabel, "文字打字机特效测试" + i + "————Test Effect " + i));
+        }
 
         protected override void OnDestory()
         {
-            mTestTask.Stop();
-        }
-
-        protected override void OnInit()
-        {
-            AddActor(new MyFirstActor(0.5, 0.5));
-            setDialogMessage("12345");
             
-            mTestTask = TimedTask.createTask(() =>
-            {
-                mTimePassed += 0.01;
-                setDialogMessage("" + mTimePassed);
-            }, 0.01, true);
         }
     }
 }

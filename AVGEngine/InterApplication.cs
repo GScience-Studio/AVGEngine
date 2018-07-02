@@ -89,6 +89,7 @@ namespace AVGEngine
             private static string nameSpace;
 
             public static ImageSource Title = null;
+            public static ImageSource TitleBackground = null;
 
             //注意这里的name**不需要**加上命名空间和**文件后缀**
             public static ImageSource LoadImageSource(string name)

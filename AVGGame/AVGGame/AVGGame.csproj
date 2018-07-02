@@ -16,10 +16,12 @@
   <ItemGroup>
     <None Remove="Resource\Actor\TestActor.png" />
     <None Remove="Resource\Title.png" />
+    <None Remove="Resource\TitleBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Actor\TestActor.png" />
     <EmbeddedResource Include="Resource\Title.png" />
+    <EmbeddedResource Include="Resource\TitleBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.0.0.561731" />

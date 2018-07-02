@@ -6,37 +6,63 @@ using Xamarin.Forms;
 namespace AVGEngine.Control
 {
     //以锚点为中心可设定位置的Image
-    public class Image : Xamarin.Forms.Image
+    public class RelevantImage : Xamarin.Forms.Image
     {
-        private double mRelevantX;
+        public enum RelevantType { Width, Height }
+
+        private RelevantType mImageRelevantType = RelevantType.Width;
+        public RelevantType ImageRelevantType
+        {
+            get => mImageRelevantType;
+            set
+            {
+                mImageRelevantType = value;
+                UpdateSize();
+            }
+        }
+
+        private double mRelevantScale = 1;
+        public double RelevantScale
+        {
+            get => mRelevantScale;
+            set
+            {
+                mRelevantScale = value;
+                UpdateSize();
+            }
+        }
+
+        private double mRelevantX = 0;
         public double RelevantX
         {
             get => mRelevantX;
             set
             {
-                UpdatePos();
                 mRelevantX = value;
+                UpdateSize();
             }
         }
 
-        private double mRelevantY;
+        private double mRelevantY = 0;
         public double RelevantY
         {
             get => mRelevantY;
             set
             {
-                UpdatePos();
                 mRelevantY = value;
+                UpdateSize();
             }
         }
 
         private double ContainerWidth;
         private double ContainerHeight;
 
-        protected override void OnSizeAllocated(double width, double height)
+        private void UpdateSize()
         {
-            base.OnSizeAllocated(width, height);
-            UpdatePos();
+            if (mImageRelevantType == RelevantType.Height)
+                HeightRequest = ContainerHeight * RelevantScale;
+            else
+                WidthRequest = ContainerWidth * RelevantScale;
         }
 
         private void UpdatePos()
@@ -51,7 +77,7 @@ namespace AVGEngine.Control
                 ContainerHeight - y - Height);
         }
 
-        public Image(VisualElement rootPage)
+        public RelevantImage(VisualElement rootPage)
         {
             ContainerWidth = rootPage.Width;
             ContainerHeight = rootPage.Height;
@@ -60,7 +86,9 @@ namespace AVGEngine.Control
             {
                 ContainerWidth = rootPage.Width;
                 ContainerHeight = rootPage.Height;
+                UpdateSize();
             };
+            SizeChanged += (sender, args) => UpdatePos();
         }
     }
 }

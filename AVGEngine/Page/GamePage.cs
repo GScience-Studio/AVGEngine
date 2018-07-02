@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AVGEngine.GameEvent;
 using Xamarin.Forms;
 
 namespace AVGEngine.Page
@@ -7,20 +8,17 @@ namespace AVGEngine.Page
     public abstract class GamePage : ContentPage
 	{
         //对话框
-	    private Label mDialogLabel;
+	    protected Label DialogLabel;
         //角色布局
 	    private AbsoluteLayout mActorLayout;
         //主布局
 	    private AbsoluteLayout mMainLayout;
 
         //角色列表
-	    private readonly List<Tuple<GameActor, Control.Image>> mActorList = new List<Tuple<GameActor, Control.Image>>();
+	    private readonly List<Tuple<GameActor, Control.RelevantImage>> mActorList = new List<Tuple<GameActor, Control.RelevantImage>>();
 
-        //设置消息
-	    public void setDialogMessage(string dialogMessage)
-	    {
-	        mDialogLabel.Text = dialogMessage;
-	    }
+        //事件相关
+	    protected GameEventList eventList = new GameEventList();
 
         //初始化
 	    protected abstract void OnInit();
@@ -30,7 +28,9 @@ namespace AVGEngine.Page
 	    {
 	        base.OnAppearing();
 	        OnInit();
-	    }
+	        eventList.Run();
+
+        }
 
 	    protected override void OnDisappearing()
 	    {
@@ -41,8 +41,8 @@ namespace AVGEngine.Page
 	    //初始化游戏页
         protected GamePage()
 	    {
-	        //对话框
-            mDialogLabel = new Label
+            //对话框
+	        DialogLabel = new Label
 	        {
                 BackgroundColor = Color.White
             };
@@ -60,7 +60,7 @@ namespace AVGEngine.Page
 	            Children =
 	            {
 	                mActorLayout,
-	                mDialogLabel
+	                DialogLabel
                 },
 	            HorizontalOptions = LayoutOptions.Fill,
 	            VerticalOptions = LayoutOptions.Fill,
@@ -74,15 +74,11 @@ namespace AVGEngine.Page
 
 	    private void OnSizeChanged(object sender, EventArgs e)
 	    {
-	        //对话框
-	        mDialogLabel.HeightRequest = Height / 3;
-	        mDialogLabel.WidthRequest = Width - 6;
-	        mDialogLabel.Margin = new Thickness(3, Height / 3 * 2 - 3, 0, 0);
-	        mDialogLabel.FontSize = mDialogLabel.HeightRequest / (1.5 * 4);
-
-	        //角色
-	        foreach (var actorPair in mActorList)
-	            UpdateActorPos(actorPair.Item1, actorPair.Item2);
+            //对话框
+	        DialogLabel.HeightRequest = Height / 3;
+	        DialogLabel.WidthRequest = Width - 6;
+	        DialogLabel.Margin = new Thickness(3, Height / 3 * 2 - 3, 0, 0);
+	        DialogLabel.FontSize = DialogLabel.HeightRequest / (1.5 * 4);
         }
 
 	    //切换游戏页
@@ -94,32 +90,17 @@ namespace AVGEngine.Page
         //添加新Actor
 	    protected void AddActor(GameActor actor)
 	    {
-	        var image = new Control.Image(this)
+	        var image = new Control.RelevantImage(this)
 	        {
 	            Source = actor.ActorSource,
                 RelevantX = actor.RelevantX,
-                RelevantY = actor.RelevantY
-	        };
+                RelevantY = actor.RelevantY,
+                RelevantScale = actor.RelevantScale,
+	            ImageRelevantType = actor.ImageRelevantType
+            };
 
-	        UpdateActorPos(actor, image);
-
-            mActorList.Add(new Tuple<GameActor, Control.Image>(actor, image));
+            mActorList.Add(new Tuple<GameActor, Control.RelevantImage>(actor, image));
 	        mActorLayout.Children.Add(image);
         }
-
-	    private void UpdateActorPos(GameActor actor, View image)
-	    {
-            //大小
-            if (actor.RelevantHeight > 0)
-	            image.HeightRequest = actor.RelevantHeight * Height;
-	        else if (actor.RelevantWidth > 0)
-	            image.WidthRequest = actor.RelevantWidth * Height;
-
-            //位置
-            image.Margin = new Thickness(
-	            actor.RelevantX * Width,
-	            actor.RelevantY * Height,
-	            0, 0);
-	    }
     }
 }

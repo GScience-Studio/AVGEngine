@@ -1,13 +1,18 @@
 ﻿using System;
+using AVGEngine.Control;
+using AVGEngine.GameEvent;
 using Xamarin.Forms;
+using Button = Xamarin.Forms.Button;
 
 namespace AVGEngine.Page
 {
     public class MainMenuPage : ContentPage
     {
+        private readonly AbsoluteLayout mMainLayoutWithBackgroundImage;
+        private readonly RelevantImage mBackgroundImage;
+
         private readonly StackLayout mMainLayout;
 
-        private readonly Style mButtonStyle;
         private readonly Button mAboutButton;
         private readonly Button mStartGameButton;
 
@@ -16,42 +21,6 @@ namespace AVGEngine.Page
 
         public MainMenuPage()
         {
-            //主菜单按钮风格
-            mButtonStyle = new Style(typeof(Button))
-            {
-                Setters =
-                {
-                    //居中
-                    new Setter
-                    {
-                        Property = View.HorizontalOptionsProperty,
-                        Value = LayoutOptions.Center
-                    },
-                    new Setter
-                    {
-                        Property = View.VerticalOptionsProperty,
-                        Value = LayoutOptions.Center
-                    },
-                    //文字颜色
-                    new Setter
-                    {
-                        Property = Button.TextColorProperty,
-                        Value = Color.White
-                    },
-                    //黑边框
-                    new Setter
-                    {
-                        Property = Button.BorderColorProperty,
-                        Value = Color.Black
-                    },
-                    //颜色
-                    new Setter
-                    {
-                        Property = BackgroundColorProperty,
-                        Value = new Color(0.0,0.0,0.0,0.3)
-                    }
-                }
-            };
             //标题
             mTitleImage = new Image
             {
@@ -91,8 +60,33 @@ namespace AVGEngine.Page
                 VerticalOptions = LayoutOptions.Center,
             };
 
-            Content = mMainLayout;
+            //背景
+            mBackgroundImage = new RelevantImage(this)
+            {
+                Source = InterApplication.Resource.TitleBackground,
+                RelevantX = 0.5,
+                RelevantY = 0.5,
+                Aspect = Aspect.AspectFill
+            };
+
+            mMainLayoutWithBackgroundImage = new AbsoluteLayout
+            {
+                Children =
+                {
+                    mBackgroundImage,
+                    mMainLayout
+                }
+            };
+            Content = mMainLayoutWithBackgroundImage;
+
             BackgroundColor = Color.Blue;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            new GameEventTextPrinterButton(mStartGameButton, "开始游戏").Do();
+            new GameEventTextPrinterButton(mAboutButton, "关于").Do();
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -102,6 +96,9 @@ namespace AVGEngine.Page
             //main layout
             mMainLayout.Margin = new Thickness(Height / 15);
             mMainLayout.Spacing = Height / 10;
+            mMainLayout.WidthRequest = Width - Height / 15 * 2;
+            mMainLayout.HeightRequest = Height - Height / 15 * 2;
+
             //title
             mTitleImage.HeightRequest = Height / 3;
 
@@ -113,6 +110,9 @@ namespace AVGEngine.Page
             mAboutButton.WidthRequest = mTitleImage.Width / 2;
             mStartGameButton.HeightRequest = height / 9;
             mAboutButton.HeightRequest = height / 9;
+
+            //背景
+            mBackgroundImage.HeightRequest = Height;
         }
 
         private void StartGame(object sender, EventArgs e)
