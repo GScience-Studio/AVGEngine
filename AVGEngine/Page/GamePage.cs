@@ -23,6 +23,9 @@ namespace AVGEngine.Page
         //背景
 	    private RelevantImage mGameBackgroundImage;
 
+        //渐变图层
+	    private FadeLayer mFadeLayer;
+
         //初始化
         protected abstract void OnInit();
 	    protected abstract void OnDestory();
@@ -32,7 +35,7 @@ namespace AVGEngine.Page
 	        base.OnAppearing();
 	        OnInit();
 	        eventList.Run();
-
+            mFadeLayer.ShowAll(() => { });
         }
 
 	    protected override void OnDisappearing()
@@ -43,9 +46,12 @@ namespace AVGEngine.Page
 
 	    //初始化游戏页
         protected GamePage()
-	    {
+        {
+            //渐变图层
+            mFadeLayer = new FadeLayer(this);
+
             //对话框
-	        DialogLabel = new Label
+            DialogLabel = new Label
 	        {
                 BackgroundColor = Color.White
             };
@@ -73,11 +79,12 @@ namespace AVGEngine.Page
 	            {
 	                mGameBackgroundImage,
                     mActorLayout,
-	                DialogLabel
+	                DialogLabel,
+	                mFadeLayer
                 },
 	            HorizontalOptions = LayoutOptions.Fill,
 	            VerticalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.Blue
+                BackgroundColor = Color.Black
 	        };
 
             //大小变化
@@ -98,7 +105,7 @@ namespace AVGEngine.Page
 	    //切换游戏页
         protected void SwitchTo<T>() where T : GamePage, new()
         {
-	        InterApplication.InterApp.MainPage = new T();
+            mFadeLayer.HideAll(() => { InterApplication.InterApp.MainPage = new T(); });
         }
 
         //添加新Actor

@@ -19,8 +19,14 @@ namespace AVGEngine.Page
         private readonly StackLayout mSubLayout;
         private readonly Image mTitleImage;
 
+        //渐变图层
+        private FadeLayer mFadeLayer;
+
         public MainMenuPage()
         {
+            //渐变图层
+            mFadeLayer = new FadeLayer(this);
+
             //标题
             mTitleImage = new Image
             {
@@ -74,12 +80,13 @@ namespace AVGEngine.Page
                 Children =
                 {
                     mBackgroundImage,
-                    mMainLayout
+                    mMainLayout,
+                    mFadeLayer
                 }
             };
             Content = mMainLayoutWithBackgroundImage;
 
-            BackgroundColor = Color.Blue;
+            BackgroundColor = Color.Black;
         }
 
         protected override void OnAppearing()
@@ -87,6 +94,7 @@ namespace AVGEngine.Page
             base.OnAppearing();
             new GameEventTextPrinterButton(mStartGameButton, "开始游戏").Do();
             new GameEventTextPrinterButton(mAboutButton, "关于").Do();
+            mFadeLayer.ShowAll(() => { });
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -114,7 +122,7 @@ namespace AVGEngine.Page
 
         private void StartGame(object sender, EventArgs e)
         {
-            InterApplication.InterApp.StartGame();
+            mFadeLayer.HideAll(InterApplication.InterApp.StartGame);
         }
     }
 }
