@@ -14,7 +14,7 @@ namespace AVGEngine.Page
 	    private AbsoluteLayout mMainLayout;
 
         //角色列表
-	    private readonly List<Tuple<GameActor, Image>> mActorList = new List<Tuple<GameActor, Image>>();
+	    private readonly List<Tuple<GameActor, Control.Image>> mActorList = new List<Tuple<GameActor, Control.Image>>();
 
         //设置消息
 	    public void setDialogMessage(string dialogMessage)
@@ -67,31 +67,23 @@ namespace AVGEngine.Page
                 BackgroundColor = Color.Blue
 	        };
 
+            //大小变化
+            SizeChanged += OnSizeChanged;
             Content = mMainLayout;
 	    }
 
-	    protected override void OnSizeAllocated(double width, double height)
+	    private void OnSizeChanged(object sender, EventArgs e)
 	    {
-	        base.OnSizeAllocated(width, height);
-            //对话框
+	        //对话框
 	        mDialogLabel.HeightRequest = Height / 3;
 	        mDialogLabel.WidthRequest = Width - 6;
 	        mDialogLabel.Margin = new Thickness(3, Height / 3 * 2 - 3, 0, 0);
-            mDialogLabel.FontSize = mDialogLabel.HeightRequest / (1.5 * 4);
+	        mDialogLabel.FontSize = mDialogLabel.HeightRequest / (1.5 * 4);
 
-            //角色
+	        //角色
 	        foreach (var actorPair in mActorList)
-	        {
-	            var actor = actorPair.Item1;
-	            var image = actorPair.Item2;
-
-                //大小
-	            if (actor.RelevantHeight > 0)
-	                image.HeightRequest = actor.RelevantHeight * Height;
-	            else if (actor.RelevantWidth > 0)
-                    image.WidthRequest = actor.RelevantWidth * Height;
-	        }
-	    }
+	            UpdateActorPos(actorPair.Item1, actorPair.Item2);
+        }
 
 	    //切换游戏页
         protected void SwitchTo<T>() where T : GamePage, new()
@@ -102,25 +94,32 @@ namespace AVGEngine.Page
         //添加新Actor
 	    protected void AddActor(GameActor actor)
 	    {
-	        var image = new Image {Source = actor.ActorSource};
+	        var image = new Control.Image(this)
+	        {
+	            Source = actor.ActorSource,
+                RelevantX = actor.RelevantX,
+                RelevantY = actor.RelevantY
+	        };
 
+	        UpdateActorPos(actor, image);
+
+            mActorList.Add(new Tuple<GameActor, Control.Image>(actor, image));
+	        mActorLayout.Children.Add(image);
+        }
+
+	    private void UpdateActorPos(GameActor actor, View image)
+	    {
             //大小
-	        if (actor.RelevantHeight > 0)
+            if (actor.RelevantHeight > 0)
 	            image.HeightRequest = actor.RelevantHeight * Height;
 	        else if (actor.RelevantWidth > 0)
 	            image.WidthRequest = actor.RelevantWidth * Height;
 
             //位置
-            image.SizeChanged += (sender, args) =>
-	        {
-	            image.Margin = new Thickness(
-	                -image.Width * image.AnchorX + actor.RelevantX * Width,
-	                -image.Height * image.AnchorY + actor.RelevantY * Height,
-	                0, 0);
-	        };
-
-            mActorList.Add(new Tuple<GameActor, Image>(actor, image));
-	        mActorLayout.Children.Add(image);
-        }
+            image.Margin = new Thickness(
+	            actor.RelevantX * Width,
+	            actor.RelevantY * Height,
+	            0, 0);
+	    }
     }
 }

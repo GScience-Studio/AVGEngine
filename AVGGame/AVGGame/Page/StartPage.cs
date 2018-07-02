@@ -24,6 +24,7 @@ namespace AVGGameCore.Page
         {
             AddActor(new MyFirstActor(0.5, 0.5));
             setDialogMessage("12345");
+            
             mTestTask = TimedTask.createTask(() =>
             {
                 mTimePassed += 0.01;

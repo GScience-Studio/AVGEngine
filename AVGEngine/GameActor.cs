@@ -14,6 +14,9 @@ namespace AVGEngine
         public readonly double RelevantX;
         public readonly double RelevantY;
 
+        public readonly int ImageHeight;
+        public readonly int ImageWidth;
+
         protected enum RelevantType { Width, Height }
 
         //image为角色的图像,relevantSize为相对的大小,relevantType为相对大小的模式(与高相关还是与宽相关)
