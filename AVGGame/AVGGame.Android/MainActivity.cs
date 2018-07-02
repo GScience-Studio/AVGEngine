@@ -33,21 +33,9 @@ namespace AVGGame.Droid
             Forms.Init(this, bundle);
 
             //定时器相关
-            mTimerCallback = new TimerCallback(Tick);
-            mTickTimer = new Timer(mTimerCallback, null, 0, 10);
+            mTickTimer = new Timer(state => { RunOnUiThread(AVGEngine.Control.TimedTask.Update); }, null, 0, 10);
 
             LoadApplication(AVGEngine.InterApplication.Create(new AVGGameCore.Laucher()));
-        }
-
-        //记录是否有未执行完成的刷新
-        private void UpdateTimedTasks()
-        {
-            RunOnUiThread(AVGEngine.Control.TimedTask.Update);
-        }
-
-        private void Tick(object state)
-        {
-            UpdateTimedTasks();
         }
     }
 }
