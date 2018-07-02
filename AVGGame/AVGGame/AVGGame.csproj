@@ -14,12 +14,14 @@
     <EmbeddedResource Remove="Resources.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resource\Actor\TestActor.png" />
+    <None Remove="Resource\Actor\MainImage.png" />
+    <None Remove="Resource\GamePage\StartPage\Background.png" />
     <None Remove="Resource\Title.png" />
     <None Remove="Resource\TitleBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource\Actor\TestActor.png" />
+    <EmbeddedResource Include="Resource\Actor\MyFirstActor\MainImage.png" />
+    <EmbeddedResource Include="Resource\GamePage\StartPage\Background.png" />
     <EmbeddedResource Include="Resource\Title.png" />
     <EmbeddedResource Include="Resource\TitleBackground.png" />
   </ItemGroup>

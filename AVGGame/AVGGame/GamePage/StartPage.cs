@@ -10,9 +10,9 @@ using AVGEngine.Page;
 using AVGGameCore.Actor;
 using Xamarin.Forms;
 
-namespace AVGGameCore.Page
+namespace AVGGameCore.GamePage
 {
-    public class StartPage : GamePage
+    public class StartPage : AVGEngine.Page.GamePage
     {
         protected override void OnInit()
         {

@@ -8,7 +8,7 @@ namespace AVGGameCore.Actor
 {
     public class MyFirstActor : GameActor
     {
-        public MyFirstActor(double relevantX, double relevantY) : base("Actor.TestActor", relevantX, relevantY,
+        public MyFirstActor(double relevantX, double relevantY) : base(relevantX, relevantY,
             0.5, RelevantImage.RelevantType.Height)
         { }
     }

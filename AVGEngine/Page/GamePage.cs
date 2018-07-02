@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AVGEngine.Control;
 using AVGEngine.GameEvent;
 using Xamarin.Forms;
 
@@ -19,9 +20,11 @@ namespace AVGEngine.Page
 
         //事件相关
 	    protected GameEventList eventList = new GameEventList();
+        //背景
+	    private RelevantImage mGameBackgroundImage;
 
         //初始化
-	    protected abstract void OnInit();
+        protected abstract void OnInit();
 	    protected abstract void OnDestory();
 
         protected override void OnAppearing()
@@ -54,12 +57,22 @@ namespace AVGEngine.Page
 	            VerticalOptions = LayoutOptions.Fill
             };
 
-	        //主布局
-	        mMainLayout = new AbsoluteLayout
+            //游戏背景
+	        mGameBackgroundImage = new RelevantImage(this)
+	        {
+	            Source = InterApplication.Resource.LoadImageSource("GamePage." + GetType().Name + ".Background"),
+	            RelevantX = 0.5,
+	            RelevantY = 0.5,
+	            Aspect = Aspect.AspectFill
+	        };
+
+            //主布局
+            mMainLayout = new AbsoluteLayout
 	        {
 	            Children =
 	            {
-	                mActorLayout,
+	                mGameBackgroundImage,
+                    mActorLayout,
 	                DialogLabel
                 },
 	            HorizontalOptions = LayoutOptions.Fill,
@@ -69,6 +82,7 @@ namespace AVGEngine.Page
 
             //大小变化
             SizeChanged += OnSizeChanged;
+
             Content = mMainLayout;
 	    }
 
@@ -88,16 +102,21 @@ namespace AVGEngine.Page
         }
 
         //添加新Actor
-	    protected void AddActor(GameActor actor)
+	    protected void AddActor(GameActor actor, string actorRes = "MainImage")
 	    {
-	        var image = new Control.RelevantImage(this)
+	        var imageSource = (ImageSource) actor.GetType().GetField(actorRes)?.GetValue(actor);
+
+	        if (imageSource == null)
+	            throw new ArgumentException("Can't find " + actorRes + " in actor " + actor.GetType().Name);
+
+            var image = new Control.RelevantImage(this)
 	        {
-	            Source = actor.ActorSource,
-                RelevantX = actor.RelevantX,
-                RelevantY = actor.RelevantY,
-                RelevantScale = actor.RelevantScale,
+	            Source = imageSource,
+	            RelevantX = actor.RelevantX,
+	            RelevantY = actor.RelevantY,
+	            RelevantScale = actor.RelevantScale,
 	            ImageRelevantType = actor.ImageRelevantType
-            };
+	        };
 
             mActorList.Add(new Tuple<GameActor, Control.RelevantImage>(actor, image));
 	        mActorLayout.Children.Add(image);

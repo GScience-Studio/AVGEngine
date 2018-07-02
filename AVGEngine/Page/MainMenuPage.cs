@@ -95,7 +95,7 @@ namespace AVGEngine.Page
 
             //main layout
             mMainLayout.Margin = new Thickness(Height / 15);
-            mMainLayout.Spacing = Height / 10;
+            mMainLayout.Spacing = Height / 8;
             mMainLayout.WidthRequest = Width - Height / 15 * 2;
             mMainLayout.HeightRequest = Height - Height / 15 * 2;
 
@@ -110,9 +110,6 @@ namespace AVGEngine.Page
             mAboutButton.WidthRequest = mTitleImage.Width / 2;
             mStartGameButton.HeightRequest = height / 9;
             mAboutButton.HeightRequest = height / 9;
-
-            //背景
-            mBackgroundImage.HeightRequest = Height;
         }
 
         private void StartGame(object sender, EventArgs e)

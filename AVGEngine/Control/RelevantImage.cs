@@ -63,6 +63,10 @@ namespace AVGEngine.Control
                 HeightRequest = ContainerHeight * RelevantScale;
             else
                 WidthRequest = ContainerWidth * RelevantScale;
+
+            //根据Aspect判断高度
+            if (Aspect == Aspect.AspectFill)
+                HeightRequest = ContainerHeight;
         }
 
         private void UpdatePos()

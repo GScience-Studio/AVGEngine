@@ -6,4 +6,6 @@
 下面是必须包含的资源们以及其作用
 Title.png			游戏开始界面的标题
 TitleBackground.png	游戏开始界面的背景
+GamePage/[GamePageName]/Background.png	指定游戏场景的背景
+Actor/[ActoeName]/MainImage.png			指定actor的首位图像素材
 ======================================
