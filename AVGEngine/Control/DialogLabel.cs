@@ -8,7 +8,7 @@ namespace AVGEngine.Control
     public class DialogLabel : Xamarin.Forms.Label
     {
         //真实所需的大小
-        public double Realheight;
+        public bool IsFull;
 
         public DialogLabel()
         {
@@ -19,9 +19,9 @@ namespace AVGEngine.Control
         {
             TimedTask.createTask((task) =>
             {
-                TranslationY -= Opacity;
-                Opacity -= 0.01f;
-                if (Opacity <= 0)
+                TranslationY -= Opacity / Height * 20;
+                Opacity -= 0.025f;
+                if (Opacity <= 0 || Text == "")
                 {
                     Opacity = 1;
                     TranslationY = 0;

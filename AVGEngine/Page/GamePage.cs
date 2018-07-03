@@ -37,8 +37,7 @@ namespace AVGEngine.Page
 	    {
 	        base.OnAppearing();
 	        OnInit();
-	        eventList.Run();
-            mFadeLayer.ShowAll(() => { });
+            mFadeLayer.ShowAll(() => { eventList.Run(); });
 
             //监听交互
 	        GameEventWaitInput.MainListenedContent = Content;
@@ -107,15 +106,16 @@ namespace AVGEngine.Page
 	    private void OnSizeChanged(object sender, EventArgs e)
 	    {
             //对话框
-	        double dialogBorder = 10;
+	        var dialogBorderWidth = Width / 64;
+	        var dialogBorderHeight = Height / 36;
 
-	        DialogLabel.HeightRequest = Height / 3 - dialogBorder * 2;
-	        DialogLabel.WidthRequest = Width - dialogBorder * 2;
+            DialogLabel.HeightRequest = Height / 3 - dialogBorderHeight * 2;
+	        DialogLabel.WidthRequest = Width - dialogBorderWidth * 2;
 	        DialogLabel.Margin = new Thickness(
-	            dialogBorder, 
-	            Height / 3 * 2 + dialogBorder, 
-	            dialogBorder + DialogLabel.WidthRequest,
-	            Height / 3 * 2 + dialogBorder + DialogLabel.HeightRequest);
+	            dialogBorderWidth, 
+	            Height / 3 * 2 + dialogBorderHeight, 
+	            0,
+	            0);
 	        DialogLabel.FontSize = DialogLabel.HeightRequest / 8;
 
             //背景

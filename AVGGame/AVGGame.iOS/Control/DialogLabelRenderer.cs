@@ -25,9 +25,9 @@ namespace AVGGame.UWP.Control
 
             var rectStart = Control.ContentStart.GetCharacterRect(LogicalDirection.Forward);
             var rectEnd = Control.ContentEnd.GetCharacterRect(LogicalDirection.Forward);
-            var textHeight = rectEnd.Bottom - rectStart.Top;
+            var height = rectEnd.Bottom - rectStart.Top;
 
-            ((AVGEngine.Control.DialogLabel) Element).IsFull = textHeight + Control.FontSize / 2 >= Height;
+            ((AVGEngine.Control.DialogLabel) Element).Realheight = height;
         }
     }
 }

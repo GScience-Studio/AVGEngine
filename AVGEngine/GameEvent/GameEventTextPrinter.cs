@@ -6,10 +6,12 @@ namespace AVGEngine.GameEvent
     public class GameEventTextPrinterDialogLabel : GameEventTextPrinter
     {
         private readonly DialogLabel mDialogLabel;
+        private readonly bool mDoNextAfterClick;
 
-        public GameEventTextPrinterDialogLabel(DialogLabel label, string message) : base(message)
+        public GameEventTextPrinterDialogLabel(DialogLabel label, string message, bool doNextAfterClick = true) : base(message)
         {
             mDialogLabel = label;
+            mDoNextAfterClick = doNextAfterClick;
         }
 
         protected override string GetText()
@@ -22,11 +24,24 @@ namespace AVGEngine.GameEvent
             mDialogLabel.Text = str;
         }
 
+        public override void Do()
+        {
+            mDialogLabel.clean(() => base.Do());
+        }
+
+        protected override void OnFinish()
+        {
+            if (mDoNextAfterClick)
+                new GameEventWaitInput(base.OnFinish).Do();
+            else
+                base.OnFinish();
+        }
+
         //是否打印满了
         private bool mIsFull;
         protected override bool CanPrint()
         {
-            if (mDialogLabel.Realheight + mDialogLabel.FontSize / 2 >= mDialogLabel.Height && !mIsFull)
+            if (mDialogLabel.IsFull && !mIsFull)
             {
                 mIsFull = true;
                 new GameEventWaitInput(() =>
@@ -93,8 +108,6 @@ namespace AVGEngine.GameEvent
 
         public override void Do()
         {
-            Text = "";
-
             mTask = TimedTask.createTask((task) =>
             {
                 if (mTotalText.Length == 0)
@@ -113,7 +126,7 @@ namespace AVGEngine.GameEvent
                     else
                         Text = Text.Remove(Text.Length - 1);
                 }
-            }, 0.01, true);
+            }, 0.025, true);
 
             mTask.Start(); ;
         }

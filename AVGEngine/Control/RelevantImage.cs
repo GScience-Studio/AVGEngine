@@ -74,11 +74,8 @@ namespace AVGEngine.Control
             var x = -Width * AnchorX + mRelevantX * ContainerWidth;
             var y = -Height * AnchorY + mRelevantY * ContainerHeight;
 
-            Margin = new Thickness(
-                x,
-                y,
-                ContainerWidth - x - Width,
-                ContainerHeight - y - Height);
+            TranslationX = x;
+            TranslationY = y;
         }
 
         public RelevantImage(VisualElement rootPage)
