@@ -17,32 +17,19 @@ namespace AVGGame.IOS.Control
 {
     public class DialogLabelRenderer : LabelRenderer
     {
-        private double GetLineHeight()
-        {
-            return Control?.Font.LineHeight * 1.35 ?? 0;
-        }
+        private UIStringAttributes mUIStringAttributes;
 
-        private void UpdateLineHeight()
+        //设置文本格式
+        public DialogLabelRenderer()
         {
             var paragraphStyle = new NSMutableParagraphStyle();
 
-            var strAttri = new UIStringAttributes
-            {
-                Font = UIFont.SystemFontOfSize((float)Element.FontSize),
-                ForegroundColor = new UIColor
-                (
-                    (float)Element.TextColor.R, (float)Element.TextColor.G,
-                    (float)Element.TextColor.B, (float)Element.TextColor.A
-                ),
-                ParagraphStyle = new NSMutableParagraphStyle()
-                {
-                    LineSpacing = (float)GetLineHeight() - Control.Font.LineHeight
-                }
-            };
-            var attrText = new NSMutableAttributedString(Control.Text ?? "");
-            attrText.AddAttributes(strAttri, new NSRange(0, (Control.Text ?? "").Length));
-            Control.AttributedText = attrText;
+            mUIStringAttributes = new UIStringAttributes();
+        }
 
+        private double GetLineHeight()
+        {
+            return Control?.Font.LineHeight * 1.3 ?? 0;
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -54,13 +41,39 @@ namespace AVGGame.IOS.Control
 
             if (e.PropertyName == "Text")
             {
-                UpdateLineHeight();
+                //更新行间距
+                var attrText = new NSMutableAttributedString(Element.Text);
+                attrText.AddAttributes(mUIStringAttributes, new NSRange(0, Element.Text.Length));
+                Control.AttributedText = attrText;
 
-                if (string.IsNullOrEmpty(Control.Text))
-                    ((AVGEngine.Control.DialogLabel) Element).IsFull = false;
+                //刷新
+                Control.SetNeedsLayout();
+                Control.LayoutIfNeeded();
+
+                var height = Control.SizeThatFits(new CGSize(Element.Width, float.MaxValue)).Height;
+
+                //计算是否充满
+                if (string.IsNullOrEmpty(Element.Text))
+                    ((AVGEngine.Control.DialogLabel)Element).IsFull = false;
                 else
-                    ((AVGEngine.Control.DialogLabel) Element).IsFull =
-                        Control.Frame.Height + GetLineHeight() >= Element.Height;
+                    ((AVGEngine.Control.DialogLabel)Element).IsFull =
+                        height >= Element.Height;
+            }
+            else if (e.PropertyName == "FontSize")
+            {
+                mUIStringAttributes.ParagraphStyle = new NSMutableParagraphStyle()
+                {
+                    LineSpacing = (float)GetLineHeight() - Control?.Font.LineHeight ?? 0
+                };
+                mUIStringAttributes.Font = UIFont.SystemFontOfSize((float)Element.FontSize);
+            }
+            else if (e.PropertyName == "TextColor")
+            {
+                mUIStringAttributes.ForegroundColor = new UIColor
+                (
+                    (float)Element.TextColor.R, (float)Element.TextColor.G,
+                    (float)Element.TextColor.B, (float)Element.TextColor.A
+                );
             }
         }
     }

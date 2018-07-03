@@ -22,6 +22,7 @@ namespace AVGGame.IOS.Control
 
             Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
             Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+            Control.UpdateConstraints();
 
             Control.TouchDown += (sender, args) =>
             {
@@ -30,6 +31,7 @@ namespace AVGGame.IOS.Control
 
                 Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 128);
                 Control.SetTitleColor(UIColor.FromRGBA(0, 0, 0, 255), UIControlState.Normal);
+                Control.UpdateConstraints();
             };
 
             Control.TouchUpInside += (sender, args) =>
@@ -39,6 +41,7 @@ namespace AVGGame.IOS.Control
 
                 Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
                 Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+                Control.UpdateConstraints();
             };
 
             Control.TouchUpOutside += (sender, args) =>
@@ -48,6 +51,7 @@ namespace AVGGame.IOS.Control
 
                 Control.BackgroundColor = UIColor.FromRGBA(0, 0, 0, 77);
                 Control.SetTitleColor(UIColor.FromRGBA(255, 255, 255, 255), UIControlState.Normal);
+                Control.UpdateConstraints();
             };
         }
     }

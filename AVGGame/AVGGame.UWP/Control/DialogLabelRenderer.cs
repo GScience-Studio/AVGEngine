@@ -19,7 +19,7 @@ namespace AVGGame.UWP.Control
     {
         private double GetLineHeight()
         {
-            return Element?.FontSize * 1.35 ?? 0;
+            return Element?.FontSize * 1.3 ?? 0;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
@@ -44,11 +44,13 @@ namespace AVGGame.UWP.Control
                 return;
             }
 
+            Control.UpdateLayout();
+
             var rectStart = Control.ContentStart.GetCharacterRect(LogicalDirection.Forward);
             var rectEnd = Control.ContentEnd.GetCharacterRect(LogicalDirection.Forward);
-            var textHeight = rectEnd.Bottom - rectStart.Top;
 
-            ((AVGEngine.Control.DialogLabel) Element).IsFull = Control.ActualHeight + GetLineHeight() >= Element.Height;
+            ((AVGEngine.Control.DialogLabel) Element).IsFull =
+                Control.ActualHeight >= Element.Height;
         }
     }
 }

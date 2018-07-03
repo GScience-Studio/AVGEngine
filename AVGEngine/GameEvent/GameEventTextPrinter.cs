@@ -26,7 +26,7 @@ namespace AVGEngine.GameEvent
 
         public override void Do()
         {
-            mDialogLabel.clean(() => base.Do());
+            mDialogLabel.Clean(() => base.Do());
         }
 
         protected override void OnFinish()
@@ -45,7 +45,7 @@ namespace AVGEngine.GameEvent
             {
                 mIsFull = true;
                 new GameEventWaitInput(() =>
-                    mDialogLabel.clean(() =>
+                    mDialogLabel.Clean(() =>
                     mIsFull = false
                 )).Do();
             }
@@ -101,7 +101,7 @@ namespace AVGEngine.GameEvent
 
         protected GameEventTextPrinter(string message)
         {
-            mTotalText = message;
+            mTotalText = message + " ";
         }
 
         protected abstract bool CanPrint();
@@ -121,7 +121,9 @@ namespace AVGEngine.GameEvent
                     if (!CanPrint())
                         return;
 
-                    Text += mTotalText[0];
+                    //禁止首位为回车
+                    if (Text != "" || mTotalText[0] != '\n')
+                        Text += mTotalText[0];
                     
                     if (!CanPrint())
                         Text = Text.Remove(Text.Length - 1);

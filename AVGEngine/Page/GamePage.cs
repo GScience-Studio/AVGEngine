@@ -117,7 +117,7 @@ namespace AVGEngine.Page
 	            0,
 	            0);
 	        DialogLabel.FontSize = DialogLabel.HeightRequest / 6;
-	        
+
             //背景
             mMainUiBacnground.HeightRequest = Height;
 	        mMainUiBacnground.WidthRequest = Width;

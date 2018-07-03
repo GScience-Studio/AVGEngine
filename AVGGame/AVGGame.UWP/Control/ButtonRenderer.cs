@@ -18,6 +18,7 @@ namespace AVGGame.UWP.Control
 
             Control.BackgroundColor = new SolidColorBrush(new Windows.UI.Color() {A = 77, B = 0, G = 0, R = 0});
             Control.Foreground = new SolidColorBrush(new Windows.UI.Color() { A = 255, B = 255, G = 255, R = 255 });
+            Control.UpdateLayout();
         }
     }
 }

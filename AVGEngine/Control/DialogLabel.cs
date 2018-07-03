@@ -7,7 +7,7 @@ namespace AVGEngine.Control
 {
     public class DialogLabel : Xamarin.Forms.Label
     {
-        //真实所需的大小
+        //是否已满
         public bool IsFull;
 
         public DialogLabel()
@@ -16,8 +16,9 @@ namespace AVGEngine.Control
             BackgroundColor = Color.Transparent;
             TextColor = Color.Black;
         }
+
         //清屏
-        public void clean(Action onFinish)
+        public void Clean(Action onFinish)
         {
             TimedTask.createTask((task) =>
             {
