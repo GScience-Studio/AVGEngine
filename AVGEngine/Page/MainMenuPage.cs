@@ -37,8 +37,14 @@ namespace AVGEngine.Page
             };
 
             //两个按钮
-            mStartGameButton = new Control.Button("开始游戏");
-            mAboutButton = new Control.Button("关于");
+            mStartGameButton = new Control.Button("")
+            {
+                IsVisible = false
+            };
+            mAboutButton = new Control.Button("")
+            {
+                IsVisible = false
+            };
 
             mStartGameButton.Clicked += StartGame;
 
@@ -92,9 +98,14 @@ namespace AVGEngine.Page
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            new GameEventTextPrinterButton(mStartGameButton, "开始游戏").Do();
-            new GameEventTextPrinterButton(mAboutButton, "关于").Do();
-            mFadeLayer.ShowAll(() => { });
+            mFadeLayer.ShowAll(() =>
+            {
+                new GameEventTextPrinterButton(mStartGameButton, "开始游戏").Do();
+                new GameEventTextPrinterButton(mAboutButton, "关于").Do();
+            }, 0.005);
+
+            //监听交互
+            GameEventWaitInput.MainListenedContent = Content;
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -122,7 +133,7 @@ namespace AVGEngine.Page
 
         private void StartGame(object sender, EventArgs e)
         {
-            mFadeLayer.HideAll(InterApplication.InterApp.StartGame);
+            mFadeLayer.HideAll(InterApplication.InterApp.StartGame, 0.005);
         }
     }
 }

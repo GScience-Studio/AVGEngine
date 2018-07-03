@@ -9,12 +9,12 @@ namespace AVGEngine.GameEvent
     public class GameEventDelay : GameEventBase
     {
         private TimedTask mTimedTask;
-        private readonly Action mDoWhat;
+        private readonly Action<TimedTask> mDoWhat;
         private readonly double mDelay;
 
         public GameEventDelay(Action doWhat, double delay)
         {
-            mDoWhat = doWhat;
+            mDoWhat = (t) => doWhat();
             mDelay = delay;
 
             mTimedTask = TimedTask.createTask(mDoWhat, mDelay);

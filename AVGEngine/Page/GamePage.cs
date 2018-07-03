@@ -9,11 +9,14 @@ namespace AVGEngine.Page
     public abstract class GamePage : ContentPage
 	{
         //对话框
-	    protected Label DialogLabel;
+	    protected DialogLabel DialogLabel;
         //角色布局
 	    private AbsoluteLayout mActorLayout;
         //主布局
 	    private AbsoluteLayout mMainLayout;
+
+        //UI背景
+	    private Image mMainUiBacnground;
 
         //角色列表
 	    private readonly List<Tuple<GameActor, Control.RelevantImage>> mActorList = new List<Tuple<GameActor, Control.RelevantImage>>();
@@ -36,7 +39,10 @@ namespace AVGEngine.Page
 	        OnInit();
 	        eventList.Run();
             mFadeLayer.ShowAll(() => { });
-        }
+
+            //监听交互
+	        GameEventWaitInput.MainListenedContent = Content;
+	    }
 
 	    protected override void OnDisappearing()
 	    {
@@ -51,10 +57,7 @@ namespace AVGEngine.Page
             mFadeLayer = new FadeLayer(this);
 
             //对话框
-            DialogLabel = new Label
-	        {
-                BackgroundColor = Color.White
-            };
+            DialogLabel = new DialogLabel();
 
             //角色等
 	        mActorLayout = new AbsoluteLayout
@@ -72,6 +75,13 @@ namespace AVGEngine.Page
 	            Aspect = Aspect.AspectFill
 	        };
 
+            //UI背景
+            mMainUiBacnground = new Image()
+            {
+                Source = InterApplication.Resource.GameMainUi,
+                Aspect = Aspect.Fill
+            };
+
             //主布局
             mMainLayout = new AbsoluteLayout
 	        {
@@ -79,7 +89,8 @@ namespace AVGEngine.Page
 	            {
 	                mGameBackgroundImage,
                     mActorLayout,
-	                DialogLabel,
+	                mMainUiBacnground,
+                    DialogLabel,
 	                mFadeLayer
                 },
 	            HorizontalOptions = LayoutOptions.Fill,
@@ -96,11 +107,22 @@ namespace AVGEngine.Page
 	    private void OnSizeChanged(object sender, EventArgs e)
 	    {
             //对话框
-	        DialogLabel.HeightRequest = Height / 3;
-	        DialogLabel.WidthRequest = Width - 6;
-	        DialogLabel.Margin = new Thickness(3, Height / 3 * 2 - 3, 0, 0);
-	        DialogLabel.FontSize = DialogLabel.HeightRequest / (1.5 * 4);
-        }
+	        double dialogBorder = 10;
+
+	        DialogLabel.HeightRequest = Height / 3 - dialogBorder * 2;
+	        DialogLabel.WidthRequest = Width - dialogBorder * 2;
+	        DialogLabel.Margin = new Thickness(
+	            dialogBorder, 
+	            Height / 3 * 2 + dialogBorder, 
+	            dialogBorder + DialogLabel.WidthRequest,
+	            Height / 3 * 2 + dialogBorder + DialogLabel.HeightRequest);
+	        DialogLabel.FontSize = DialogLabel.HeightRequest / 8;
+
+            //背景
+	        mMainUiBacnground.HeightRequest = Height;
+	        mMainUiBacnground.WidthRequest = Width;
+
+	    }
 
 	    //切换游戏页
         protected void SwitchTo<T>() where T : GamePage, new()

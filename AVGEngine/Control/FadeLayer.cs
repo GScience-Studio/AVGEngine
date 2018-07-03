@@ -45,19 +45,18 @@ namespace AVGEngine.Page
         }
 
         //隐藏所有内容为黑色
-        public void HideAll(Action doAfterDone)
+        public void HideAll(Action doAfterDone, double speed = 0.02)
         {
             //先结束
-            if (mTimedTask != null)
-                mTimedTask.Stop();
+            mTimedTask?.Stop();
 
-            mTimedTask = TimedTask.createTask(() =>
+            mTimedTask = TimedTask.createTask((task) =>
             {
-                Alpha += 0.02f;
+                Alpha += speed;
                 if (Alpha >= 1)
                 {
                     Alpha = 1;
-                    mTimedTask.Stop();
+                    task.Stop();
                     doAfterDone();
                 }
             }, 0.01, true);
@@ -66,19 +65,18 @@ namespace AVGEngine.Page
         }
 
         //显示所有内容为黑色
-        public void ShowAll(Action doAfterDone)
+        public void ShowAll(Action doAfterDone, double speed = 0.02)
         {
             //先结束
-            if (mTimedTask != null)
-                mTimedTask.Stop();
+            mTimedTask?.Stop();
 
-            mTimedTask = TimedTask.createTask(() =>
+            mTimedTask = TimedTask.createTask((task) =>
             {
-                Alpha -= 0.02f;
+                Alpha -= speed;
                 if (Alpha <= 0)
                 {
                     Alpha = 0;
-                    mTimedTask.Stop();
+                    task.Stop();
                     doAfterDone();
                 }
             }, 0.01, true);

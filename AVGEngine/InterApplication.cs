@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using AVGEngine.Page;
 using Xamarin.Forms;
@@ -90,6 +91,8 @@ namespace AVGEngine
 
             public static ImageSource Title = null;
             public static ImageSource TitleBackground = null;
+
+            public static ImageSource GameMainUi = null;
 
             //注意这里的name**不需要**加上命名空间和**文件后缀**
             public static ImageSource LoadImageSource(string name)

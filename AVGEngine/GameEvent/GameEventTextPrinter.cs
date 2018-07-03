@@ -3,23 +3,39 @@ using Xamarin.Forms;
 
 namespace AVGEngine.GameEvent
 {
-    public class GameEventTextPrinterLabel : GameEventTextPrinter
+    public class GameEventTextPrinterDialogLabel : GameEventTextPrinter
     {
-        private readonly Label mLabel;
+        private readonly DialogLabel mDialogLabel;
 
-        public GameEventTextPrinterLabel(Label label, string message) : base(message)
+        public GameEventTextPrinterDialogLabel(DialogLabel label, string message) : base(message)
         {
-            mLabel = label;
+            mDialogLabel = label;
         }
 
         protected override string GetText()
         {
-            return mLabel.Text;
+            return mDialogLabel.Text;
         }
 
         protected override void SetText(string str)
         {
-            mLabel.Text = str;
+            mDialogLabel.Text = str;
+        }
+
+        //是否打印满了
+        private bool mIsFull;
+        protected override bool CanPrint()
+        {
+            if (mDialogLabel.Realheight + mDialogLabel.FontSize / 2 >= mDialogLabel.Height && !mIsFull)
+            {
+                mIsFull = true;
+                new GameEventWaitInput(() =>
+                    mDialogLabel.clean(() =>
+                    mIsFull = false
+                )).Do();
+            }
+
+            return !mIsFull;
         }
     }
 
@@ -32,6 +48,12 @@ namespace AVGEngine.GameEvent
             mButton = button;
         }
 
+        public override void Do()
+        {
+            base.Do();
+            mButton.IsVisible = true;
+        }
+
         protected override string GetText()
         {
             return mButton.Text;
@@ -40,6 +62,11 @@ namespace AVGEngine.GameEvent
         protected override void SetText(string str)
         {
             mButton.Text = str;
+        }
+
+        protected override bool CanPrint()
+        {
+            return true;
         }
     }
 
@@ -62,23 +89,31 @@ namespace AVGEngine.GameEvent
             mTotalText = message;
         }
 
+        protected abstract bool CanPrint();
+
         public override void Do()
         {
             Text = "";
 
-            mTask = TimedTask.createTask(() =>
+            mTask = TimedTask.createTask((task) =>
             {
                 if (mTotalText.Length == 0)
                 {
-                    mTask.Stop();
+                    task.Stop();
                     OnFinish();
                 }
                 else
                 {
+                    if (!CanPrint())
+                        return;
                     Text += mTotalText[0];
-                    mTotalText = mTotalText.Substring(1, mTotalText.Length - 1);
+                    //如果修改后不能再显示则说明上次的被丢弃了
+                    if (CanPrint())
+                        mTotalText = mTotalText.Substring(1, mTotalText.Length - 1);
+                    else
+                        Text = Text.Remove(Text.Length - 1);
                 }
-            }, 0.05, true);
+            }, 0.01, true);
 
             mTask.Start(); ;
         }

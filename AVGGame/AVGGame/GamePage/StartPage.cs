@@ -20,8 +20,15 @@ namespace AVGGameCore.GamePage
             AddActor(new MyFirstActor(0.5, 0.5));
 
             //处理测试事件
-            for (var i = 0; i < 50; ++i)
-                eventList.Add(new GameEventTextPrinterLabel(DialogLabel, "文字打字机特效测试" + i + "————Test Effect " + i));
+            for (var i = 0; i < 1; ++i)
+            {
+                var str = "文字打字机特效测试" + i + "————Test Effect " + i + "\r";
+
+                for (var j = 0; j < 100; j++)
+                    str += " " + j + "换行测试 ";
+                
+                eventList.Add(new GameEventTextPrinterDialogLabel(DialogLabel, str));
+            }
         }
 
         protected override void OnDestory()

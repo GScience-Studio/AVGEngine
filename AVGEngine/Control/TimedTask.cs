@@ -23,7 +23,7 @@ namespace AVGEngine.Control
         //记录所有定时任务
         private static readonly List<TimedTask> mTimedTasks = new List<TimedTask>();
 
-        private readonly Action mTask;
+        private readonly Action<TimedTask> mTask;
         private readonly double mDelay;
         private double mTimePassed = 0;
 
@@ -31,7 +31,7 @@ namespace AVGEngine.Control
         private readonly bool mIsLoop;
 
         //在指定时间之后执行task
-        private TimedTask(Action task, double delay, bool isLoop)
+        private TimedTask(Action<TimedTask> task, double delay, bool isLoop)
         {
             mTask = task;
             mDelay = delay;
@@ -80,13 +80,6 @@ namespace AVGEngine.Control
             for (var i = 0; i < mTimedTasks.Count; ++i)
             {
                 var timedTask = mTimedTasks[i];
-
-                //如果是已经停止的task
-                if (timedTask.mTaskState == TaskState.Stopped)
-                {
-                    mTimedTasks.RemoveAt(i--);
-                    continue;
-                }
                 
                 //如果任务没有开始则不刷新
                 if (timedTask.mTaskState != TaskState.Started)
@@ -96,17 +89,22 @@ namespace AVGEngine.Control
 
                 //循环的话则按照循环的处理
                 if (timedTask.mIsLoop)
-                    while (timedTask.mDelay <= timedTask.mTimePassed)
+                    while (timedTask.mDelay <= timedTask.mTimePassed && timedTask.mTaskState == TaskState.Started)
                     {
-                        timedTask.mTask();
+                        timedTask.mTask(timedTask);
                         timedTask.mTimePassed -= timedTask.mDelay;
                     }
                 //否则执行一次就移除
-                else if (timedTask.mDelay <= timedTask.mTimePassed)
+                else if (timedTask.mDelay <= timedTask.mTimePassed && timedTask.mTaskState == TaskState.Started)
                 {
-                    timedTask.mTask();
-                    mTimedTasks.RemoveAt(i--);
+                    timedTask.mTask(timedTask);
                     timedTask.mTaskState = TaskState.Stopped;
+                }
+
+                //如果是已经停止的task
+                if (timedTask.mTaskState == TaskState.Stopped)
+                {
+                    mTimedTasks.RemoveAt(i--);
 
                     //调用结束函数
                     timedTask.Finished?.Invoke(timedTask, new EventArgs());
@@ -118,7 +116,7 @@ namespace AVGEngine.Control
         }
 
         //创建任务
-        public static TimedTask createTask(Action task, double delay, bool isLoop = false)
+        public static TimedTask createTask(Action<TimedTask> task, double delay, bool isLoop = false)
         {
             var timedTask = new TimedTask(task, delay, isLoop);
             mTimedTasks.Add(timedTask);

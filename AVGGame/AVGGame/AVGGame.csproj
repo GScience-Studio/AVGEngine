@@ -15,12 +15,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resource\Actor\MainImage.png" />
+    <None Remove="Resource\GameMainUi.png" />
     <None Remove="Resource\GamePage\StartPage\Background.png" />
     <None Remove="Resource\Title.png" />
     <None Remove="Resource\TitleBackground.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource\Actor\MyFirstActor\MainImage.png" />
+    <EmbeddedResource Include="Resource\GameMainUi.png" />
     <EmbeddedResource Include="Resource\GamePage\StartPage\Background.png" />
     <EmbeddedResource Include="Resource\Title.png" />
     <EmbeddedResource Include="Resource\TitleBackground.png" />
