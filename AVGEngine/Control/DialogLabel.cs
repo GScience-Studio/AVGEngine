@@ -13,6 +13,8 @@ namespace AVGEngine.Control
         public DialogLabel()
         {
             LineBreakMode = LineBreakMode.WordWrap;
+            BackgroundColor = Color.Transparent;
+            TextColor = Color.Black;
         }
         //清屏
         public void clean(Action onFinish)

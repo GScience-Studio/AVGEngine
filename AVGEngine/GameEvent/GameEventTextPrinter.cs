@@ -117,18 +117,20 @@ namespace AVGEngine.GameEvent
                 }
                 else
                 {
+                    //不能再显示了
                     if (!CanPrint())
                         return;
+
                     Text += mTotalText[0];
-                    //如果修改后不能再显示则说明上次的被丢弃了
-                    if (CanPrint())
-                        mTotalText = mTotalText.Substring(1, mTotalText.Length - 1);
-                    else
+                    
+                    if (!CanPrint())
                         Text = Text.Remove(Text.Length - 1);
+                    else
+                        mTotalText = mTotalText.Substring(1, mTotalText.Length - 1);
                 }
             }, 0.025, true);
 
-            mTask.Start(); ;
+            mTask.Start();
         }
     }
 }

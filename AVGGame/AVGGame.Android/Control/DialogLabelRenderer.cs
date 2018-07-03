@@ -18,6 +18,22 @@ namespace AVGGame.Droid.Control
         {
         }
 
+        private double GetLineHeight()
+        {
+            return Control?.TextSize * 1.35 ?? 0;
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+
+            if (Control == null || Element == null)
+                return;
+
+            if (e.PropertyName == "FontSize")
+                Control.SetLineSpacing((float) (GetLineHeight() - Control.TextSize), 1);
+        }
+
         protected override void OnElementChanged(ElementChangedEventArgs<Label> elementChangedEventArgs)
         {
             base.OnElementChanged(elementChangedEventArgs);
@@ -29,7 +45,7 @@ namespace AVGGame.Droid.Control
                         ((AVGEngine.Control.DialogLabel) Element).IsFull = false;
                     else
                     {
-                        double textHeight = Control.LineHeight * Control.LineCount;
+                        var textHeight = GetLineHeight() * Control.LineCount;
                         ((AVGEngine.Control.DialogLabel) Element).IsFull = textHeight + Control.TextSize >= Height;
                     }
             };
