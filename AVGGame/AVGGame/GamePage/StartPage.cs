@@ -17,7 +17,7 @@ namespace AVGGameCore.GamePage
         protected override void OnInit()
         {
             //添加角色
-            AddActor(new MyFirstActor(0.5, 0.5));
+            var testActor = AddActor(new MyFirstActor(0.5, 0.5));
 
             eventList.Add(new GameEventTextPrinterDialogLabel(DialogLabel, 
                 "\"游戏马上就要做好了\"  隔壁一个角落里传来了一个奇怪的声音……\n" +
@@ -27,6 +27,8 @@ namespace AVGGameCore.GamePage
                 "\"对，就是我创造的你。所以你要完全听从我的命令，接下来我要对你进行及其暴力的测试。\"\n" +
                 "\"什么……暴力的测试……不要啊啊啊啊啊啊\"\n" +
                 "\"已经晚了……停不下来的了\""));
+
+            eventList.Add(new GameEventActorFade(testActor, 1.0, 0.0, 0.005));
 
             for (var i = 0; i < 3; ++i)
                 eventList.Add(new GameEventTextPrinterDialogLabel(DialogLabel, "单机进入下一页测试 " + (i + 1)));

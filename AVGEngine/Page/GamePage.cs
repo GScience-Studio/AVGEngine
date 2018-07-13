@@ -131,7 +131,7 @@ namespace AVGEngine.Page
         }
 
         //添加新Actor
-	    protected void AddActor(GameActor actor, string actorRes = "MainImage")
+	    protected Image AddActor(GameActor actor, string actorRes = "MainImage")
 	    {
 	        var imageSource = (ImageSource) actor.GetType().GetField(actorRes)?.GetValue(actor);
 
@@ -149,6 +149,8 @@ namespace AVGEngine.Page
 
             mActorList.Add(new Tuple<GameActor, Control.RelevantImage>(actor, image));
 	        mActorLayout.Children.Add(image);
-        }
+
+	        return image;
+	    }
     }
 }

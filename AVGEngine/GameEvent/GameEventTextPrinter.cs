@@ -124,9 +124,11 @@ namespace AVGEngine.GameEvent
                     //禁止首位为回车
                     if (Text != "" || mTotalText[0] != '\n')
                         Text += mTotalText[0];
-                    
+
                     if (!CanPrint())
+                    {
                         Text = Text.Remove(Text.Length - 1);
+                    }
                     else
                         mTotalText = mTotalText.Substring(1, mTotalText.Length - 1);
                 }
